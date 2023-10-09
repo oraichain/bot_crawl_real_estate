@@ -25,5 +25,5 @@ def run():
          data = {'id_crawl': hashlib.md5(item['_id'].encode()).hexdigest(), 'website': 'meeyland.com', 'data': item}
          mongodb.insert(data)
          logging(f'Crawled website: meeyland.com, Id: {data["id_crawl"]}')
-         
+   mongodb.close()
 run()
