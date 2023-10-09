@@ -9,6 +9,7 @@ import redisdb
 import requests
 from webdriver_manager.chrome import ChromeDriverManager
 from dotenv import load_dotenv
+load_dotenv()
 import os
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 def create_proxy():
