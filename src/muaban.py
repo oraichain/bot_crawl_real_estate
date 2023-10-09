@@ -39,7 +39,7 @@ def run(offset):
                   data = getJSON(id)
                   mongodb.insert(data)
                   logging(f"Crawled website: muaban.net, Id: {data['id_crawl']}")
-               
+   mongodb.close()    
 run(40)
                
                

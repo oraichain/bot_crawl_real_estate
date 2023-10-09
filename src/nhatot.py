@@ -46,6 +46,6 @@ def run():
          if data:
             mongodb.insert(data)
             logging(f'Crawled website: nhatot.com, Id: {data["id_crawl"]}')
-            
+   mongodb.close() 
 run()
    
