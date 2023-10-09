@@ -52,7 +52,7 @@ def run(offset):
             data = getHTML(link)
             mongodb.insert(data)
             logging(f'Crawled website: guland.vn, Id: {data["id_crawl"]}, Link: {link}')
-
+   mongodb.close()
 run(2)
          
        
