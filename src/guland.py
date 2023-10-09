@@ -53,6 +53,6 @@ def run(offset):
             mongodb.insert(data)
             logging(f'Crawled website: guland.vn, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()
-run(2)
+run(3)
          
        
