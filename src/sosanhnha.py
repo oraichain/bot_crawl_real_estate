@@ -33,5 +33,5 @@ def run():
          data = getHTML(link)
          mongodb.insert(data)
          logging(f'Crawled website: sosanhnha.com, Id: {data["id_crawl"]}, Link: {link}')
-         
+   mongodb.close()
 run()
