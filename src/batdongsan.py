@@ -101,6 +101,7 @@ def process():
          time.sleep(5)
       for thread in threads:
           thread.join()
+      mongodb.close()
           
 process()
 
