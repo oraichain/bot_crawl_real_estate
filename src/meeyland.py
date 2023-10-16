@@ -9,7 +9,7 @@ import hashlib
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 
 def crawlNewFeed():
-   url = 'https://meeyland.com/_next/data/UhjJMW6d8mnHNjkYS53eE/mua-ban-nha-dat.json?filter=need%5B%5D%3Dcan_ban&sort=0&category=mua-ban-nha-dat'
+   url = 'https://meeyland.com/_next/data/J6jtKP9iWZmX9RomarPa3/mua-ban-nha-dat.json?filter=need%5B%5D%3Dcan_ban&sort=0&category=mua-ban-nha-dat'
    response = requests.get(url)
    if response.status_code != 200:
       return crawlNewFeed()
