@@ -1,12 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import mongodb
-from noti_logging import logging
 import hashlib
-import redisdb
-
-
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+import sys
+sys.path.append('script/src/')
+import os
+from save_data import save
 
 def getPage(page):
    if page == 1 or page == 0:
@@ -74,10 +72,7 @@ def run(offset):
    for i in range(1, offset):
       links = getPage(i)
       for link in links:
-         if redisdb.check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
             data = getHTML(link)
-            mongodb.insert(data)
-            logging(f'Crawled website: cafeland.vn, Id: {data["id_crawl"]}, Link: {link}')
-   mongodb.close()
+            save(data['id_crawl'], data['data'], data['website'])
 
 run(2)
