@@ -29,7 +29,6 @@ def run(offset):
       links = getPage(offset)
       for link in links:
          data = getHTML(link)
-         
-         # save data to mongodb
+         save(data['id_crawl'], data['data'], data['website'])
          
 run(3)
