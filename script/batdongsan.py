@@ -3,15 +3,15 @@ import time
 from bs4 import BeautifulSoup
 import hashlib
 import threading
-import mongodb
-from noti_logging import logging
-import redisdb
 import requests
 from webdriver_manager.chrome import ChromeDriverManager
 from dotenv import load_dotenv
 load_dotenv()
+import sys
+sys.path.append('script/src/')
 import os
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+from save_data import save
+
 def create_proxy():
     TINSOFT_KEY = os.getenv('TINSOFT_KEY')
     url = f'https://proxy.tinsoftsv.com/api/changeProxy.php?key={TINSOFT_KEY}'
@@ -23,6 +23,8 @@ def create_proxy():
     else:
         time.sleep(proxy['next_change']+1)
         return create_proxy()
+    
+    
 def create_driver(page):         
     options = uc.ChromeOptions()
     # tắt load ảnh
@@ -64,32 +66,22 @@ def getPage(driver,page):
     return links
 
 def getHTML(driver,url):
-    if redisdb.check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw') == True:
-        driver.set_page_load_timeout(10)
-        try:
-            driver.get(url)
-            driver.save_screenshot('batdongsan.png')
-        except:
-            redisdb.delete_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw')
-            return None
-        time.sleep(1)
-        html = driver.page_source
-        return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'batdongsan.com.vn', 'data': html}
-    else:
-        return None
+    driver.set_page_load_timeout(10)
+    driver.get(url)
+    driver.save_screenshot('batdongsan.png')
+    time.sleep(1)
+    html = driver.page_source
+    return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'batdongsan.com.vn', 'data': html}
+   
 
 
 def crawl_one_thread(page):
-    
     driver = create_driver(page)
-    
     links = getPage(driver,page)
-    #logging(f'Found {len(links)} links in page {page}')
     for link in links:
         data = getHTML(driver,link)
         if data != None:
-            mongodb.insert(data)
-            logging(f'Crawled website: batdongsan.com.vn, Id: {data["id_crawl"]}, Link: {link}')
+           save(data['id_crawl'], data['data'], data['website'])
     driver.quit()
         
 def process():
@@ -102,7 +94,5 @@ def process():
          time.sleep(5)
       for thread in threads:
           thread.join()
-      mongodb.close()
-          
 process()
 

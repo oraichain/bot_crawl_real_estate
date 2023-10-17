@@ -47,4 +47,4 @@ def run(offset):
          data = getHTML(link)
          save(data['id_crawl'], data['data'], data['website'])
          
-run(3)
+run(10)
