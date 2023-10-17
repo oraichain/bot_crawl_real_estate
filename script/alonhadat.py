@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import hashlib
 import sys
-sys.path.append('../src')
+sys.path.append('src')
 from src.save_data import save
 with open('proxy.txt', 'r') as f:
    proxy = f.read()
