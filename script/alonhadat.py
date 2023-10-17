@@ -1,12 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import mongodb
-from noti_logging import logging
 import hashlib
-import redisdb
-
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
-
+from src.save_data import save
 with open('proxy.txt', 'r') as f:
    proxy = f.read()
    
@@ -33,10 +28,8 @@ def run(offset):
    for i in range(1, offset):
       links = getPage(offset)
       for link in links:
-         if redisdb.check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
-            data = getHTML(link)
-            mongodb.insert(data)
-            logging(f'Crawled website: alonhadat.com.vn, Id: {data["id_crawl"]}, Link: {link}')
-   mongodb.close()
+         data = getHTML(link)
+         
+         # save data to mongodb
          
 run(3)
