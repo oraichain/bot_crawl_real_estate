@@ -1,9 +1,8 @@
 import requests
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
 import redisdb
-
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 
@@ -23,10 +22,7 @@ def getId(offset):
 def getJSON(id):
    url = f'https://muaban.net/listing/v1/classifieds/{id}/detail'
    response = requests.get(url)
-   
-   website = url.split("/")[2]
-      
-         
+   website = url.split("/")[2]  
    return {'id_crawl': hashlib.md5(str(id).encode()).hexdigest(), 'website': website, 'data': response.text}
          
 
@@ -39,7 +35,9 @@ def run(offset):
                   data = getJSON(id)
                   mongodb.insert(data)
                   logging(f"Crawled website: muaban.net, Id: {data['id_crawl']}")
-   mongodb.close()    
+   mongodb.close()  
+   
+     
 run(40)
                
                
