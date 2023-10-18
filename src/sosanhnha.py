@@ -1,13 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
 import redisdb
 
-
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
-
 
 
 def getNewFeed():
@@ -20,6 +18,7 @@ def getNewFeed():
    link = list(set(links))
    link = ['https://sosanhnha.com'+link for link in link]
    return link
+   
    
 def getHTML(url):
    response = requests.get(url)
@@ -34,4 +33,5 @@ def run():
          mongodb.insert(data)
          logging(f'Crawled website: sosanhnha.com, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()
+   
 run()
