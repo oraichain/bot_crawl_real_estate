@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
 import redisdb
 
@@ -64,10 +64,9 @@ def getHTML(url):
    }
    
    response = requests.request("GET", url, headers=headers, data=payload)
-
    website = 'cafeland.vn'
-
    return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': website, 'data': response.text}
+      
       
 def run(offset):
    for i in range(1, offset):
@@ -78,5 +77,6 @@ def run(offset):
             mongodb.insert(data)
             logging(f'Crawled website: cafeland.vn, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()
+
 
 run(2)
