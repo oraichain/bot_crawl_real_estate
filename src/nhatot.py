@@ -1,8 +1,7 @@
 import requests
 import mongodb
-from utils import logging
+from utils import logging, check_id_crawl
 import hashlib
-import redisdb
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 
@@ -41,7 +40,7 @@ def crawlNewFeed():
 def run():
    list_ids = crawlNewFeed()
    for id in list_ids:
-      if redisdb.check_id_crawl(hashlib.md5(str(id).encode()).hexdigest(),'raw') == True:
+      if check_id_crawl(hashlib.md5(str(id).encode()).hexdigest(),'raw') == True:
          data = getJSON(id)
          if data:
             mongodb.insert(data)

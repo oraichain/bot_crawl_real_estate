@@ -1,9 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import mongodb
-from utils import logging
+from utils import logging, check_id_crawl
 import hashlib
-import redisdb
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 
@@ -28,7 +27,7 @@ def getHTML(url):
 def run():
    links = getNewFeed()
    for link in links:
-      if redisdb.check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
+      if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
          data = getHTML(link)
          mongodb.insert(data)
          logging(f'Crawled website: sosanhnha.com, Id: {data["id_crawl"]}, Link: {link}')

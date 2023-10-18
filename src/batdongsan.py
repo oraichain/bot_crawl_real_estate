@@ -4,8 +4,7 @@ from bs4 import BeautifulSoup
 import hashlib
 import threading
 import mongodb
-from utils import logging, get_proxy
-import redisdb
+from utils import logging, get_proxy, check_id_crawl, delete_id_crawl
 from dotenv import load_dotenv
 load_dotenv()
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
@@ -52,12 +51,12 @@ def getPage(driver,page):
 
 
 def getHTML(driver,url):
-    if redisdb.check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw') == True:
+    if check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw') == True:
         driver.set_page_load_timeout(10)
         try:
             driver.get(url)
         except:
-            redisdb.delete_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw')
+            delete_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw')
             return None
         time.sleep(1)
         html = driver.page_source

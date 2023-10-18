@@ -60,7 +60,6 @@ def get_proxy(time_live_proxy):
          return info_proxy[0]
       
 
-
 def client():
    redis_host = 'localhost' 
    redis_port = 6379
