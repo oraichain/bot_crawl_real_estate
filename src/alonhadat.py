@@ -38,4 +38,4 @@ def run(offset):
             logging(f'Crawled website: alonhadat.com.vn, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()
          
-run(3)
+run(5)
