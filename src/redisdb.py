@@ -11,9 +11,9 @@ def client():
 
 def check_id_crawl(id_crawl,set_name):
    # nếu id_crawl chưa tồn tại trong set_name trả về True
-   client = client()
-   status = client.sadd(set_name, id_crawl)
-   client.close()
+   client_ = client()
+   status = client_.sadd(set_name, id_crawl)
+   client_.close()
    if status == 1:
       return True
    else:
@@ -21,15 +21,15 @@ def check_id_crawl(id_crawl,set_name):
 
 
 def delete_id_crawl(id_crawl,set_name):
-   client = client()
-   client.srem(set_name, id_crawl)
-   client.close()
+   client_ = client()
+   client_.srem(set_name, id_crawl)
+   client_.close()
    
    
 def check_id_crawl_exist(id_crawl,set_name):
-   client = client()
-   status = client.sismember(set_name, id_crawl)
-   client.close()
+   client_ = client()
+   status = client_.sismember(set_name, id_crawl)
+   client_.close()
    if status == 1:
       return True
    else:
