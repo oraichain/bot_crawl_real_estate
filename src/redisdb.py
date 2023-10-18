@@ -1,10 +1,12 @@
 import redis
 
-# Kết nối tới máy chủ Redis
-redis_host = 'localhost'  # Thay thế bằng địa chỉ máy chủ Redis của bạn
-redis_port = 6379  # Thay thế bằng cổng Redis của bạn
-redis_password = None  # Thay thế bằng mật khẩu Redis của bạn nếu có
-redisdb = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
+
+def client():
+   # Kết nối tới máy chủ Redis
+   redis_host = 'localhost'  # Thay thế bằng địa chỉ máy chủ Redis của bạn
+   redis_port = 6379  # Thay thế bằng cổng Redis của bạn
+   redis_password = None  # Thay thế bằng mật khẩu Redis của bạn nếu có
+   redisdb = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
 
 
 def check_id_crawl(id_crawl,set_name):
