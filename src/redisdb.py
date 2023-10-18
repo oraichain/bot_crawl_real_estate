@@ -21,11 +21,13 @@ def check_id_crawl(id_crawl,set_name):
 
 
 def delete_id_crawl(id_crawl,set_name):
+   client = client()
    client.srem(set_name, id_crawl)
    client.close()
    
    
 def check_id_crawl_exist(id_crawl,set_name):
+   client = client()
    status = client.sismember(set_name, id_crawl)
    client.close()
    if status == 1:
