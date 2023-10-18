@@ -8,7 +8,6 @@ import redisdb
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
    
 PROXY = get_proxy(5*60)
-print(PROXY)
 
 def getPage(offset):
    if offset == 0 or offset ==1:
@@ -37,5 +36,5 @@ def run(offset):
             mongodb.insert(data)
             logging(f'Crawled website: alonhadat.com.vn, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()
-         
+   
 run(5)
