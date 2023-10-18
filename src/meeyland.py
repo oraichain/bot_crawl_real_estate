@@ -2,11 +2,13 @@ import requests
 import mongodb
 import requests
 from bs4 import BeautifulSoup
-from noti_logging import logging
+from utils import logging
 import redisdb
 import hashlib
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+
+
 with open('./src/public_key_meeyland', 'r') as f:
    PUBLIC_KEY = f.read()
 def get_key():
@@ -39,4 +41,5 @@ def run():
          mongodb.insert(data)
          logging(f'Crawled website: meeyland.com, Id: {data["id_crawl"]}')
    mongodb.close()
+   
 run()
