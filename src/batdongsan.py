@@ -12,17 +12,9 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
-def create_proxy():
-    TINSOFT_KEY = os.getenv('TINSOFT_KEY')
-    url = f'https://proxy.tinsoftsv.com/api/changeProxy.php?key={TINSOFT_KEY}'
-    response = requests.get(url)
-    proxy = response.json()
-    if proxy['success'] == True:
-        with open('proxy.txt','w') as f:
-            f.write(proxy['proxy'])
-    else:
-        time.sleep(proxy['next_change']+1)
-        return create_proxy()
+
+
+
 def create_driver(page):         
     options = uc.ChromeOptions()
     # tắt load ảnh

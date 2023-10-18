@@ -36,8 +36,8 @@ def create_proxy():
     response = requests.get(url)
     proxy = response.json()
     if proxy['success'] == True:
-        with open('proxy.txt','w') as f:
-            f.write(proxy['proxy'])
+        with open('proxy','w') as f:
+            f.write(f'proxy["proxy"]|{time.time()}')
     else:
         time.sleep(proxy['next_change']+1)
         return create_proxy()
