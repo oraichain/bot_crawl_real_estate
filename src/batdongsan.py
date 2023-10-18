@@ -36,6 +36,8 @@ def create_driver(page):
     # set vị trí cho chrome
     driver.set_window_position((page-1)//3*320, (page-1)%3*360)
     return driver
+
+
 def getPage(driver,page):
     if page == 1 or page == 0:
         url = 'https://batdongsan.com.vn/nha-dat-ban?sortValue=1'
@@ -55,6 +57,7 @@ def getPage(driver,page):
     links = ['https://batdongsan.com.vn'+link['href'] for link in links]
     return links
 
+
 def getHTML(driver,url):
     if redisdb.check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw') == True:
         driver.set_page_load_timeout(10)
@@ -72,11 +75,8 @@ def getHTML(driver,url):
 
 
 def crawl_one_thread(page):
-    
     driver = create_driver(page)
-    
     links = getPage(driver,page)
-    #logging(f'Found {len(links)} links in page {page}')
     for link in links:
         data = getHTML(driver,link)
         if data != None:
@@ -84,8 +84,8 @@ def crawl_one_thread(page):
             logging(f'Crawled website: batdongsan.com.vn, Id: {data["id_crawl"]}, Link: {link}')
     driver.quit()
         
+        
 def process():
-      create_proxy()
       threads = []
       for i in range(1, 11):
          threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
@@ -96,5 +96,7 @@ def process():
           thread.join()
       mongodb.close()
           
-process()
+          
+if __name__ == '__main__':          
+    process()
 
