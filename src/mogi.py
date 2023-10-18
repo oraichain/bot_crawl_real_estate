@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
 import redisdb
 
@@ -9,7 +9,6 @@ mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
 
 
 def getHTML(url):
-
    payload={}
    headers = {
    'authority': 'mogi.vn',
@@ -27,13 +26,10 @@ def getHTML(url):
    'upgrade-insecure-requests': '1',
    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
    }
-
    response = requests.request("GET", url, headers=headers, data=payload) 
-
    website = 'mogi.vn'
-   
-
    return {'id_crawl': hashlib.md5(url.split('-id')[1].encode()).hexdigest(), 'website': website, 'data': response.text}
+
 
 def getPage(page):
    if page == 0 or page == 1:
@@ -60,17 +56,12 @@ def getPage(page):
    'upgrade-insecure-requests': '1',
    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
    }
-
    response = requests.request("GET", url, headers=headers, data=payload)
-
    soup = BeautifulSoup(response.text, "html.parser")
-
    # lấy tất cả href trong thẻ a có class là link-overlay
    links = soup.find_all("a", class_="link-overlay")
    links = [link.get("href") for link in links]
    return links
-
-
 
 
 def run(offset):
@@ -82,6 +73,7 @@ def run(offset):
             mongodb.insert(data)
             logging(f'Crawled website: mogi.vn, Id: {data["id_crawl"]}, Link: {link}')
    mongodb.close()    
+
 run(2)
          
             
