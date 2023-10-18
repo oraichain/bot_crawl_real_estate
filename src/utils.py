@@ -37,7 +37,7 @@ def create_proxy():
     proxy = response.json()
     if proxy['success'] == True:
         with open('./src/proxy','w') as f:
-            f.write(f'proxy["proxy"]|{time.time()}')
+            f.write(f'{proxy["proxy"]}|{time.time()}')
     else:
         time.sleep(proxy['next_change']+1)
         return create_proxy()
