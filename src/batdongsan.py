@@ -8,8 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 mongodb = MongoDB('tindangbatdongsan', 'raw')
-PROXY = get_proxy(15*60)
-
+PROXY = get_proxy(2*60)
 
 def create_driver(page):         
     options = uc.ChromeOptions()
@@ -19,8 +18,6 @@ def create_driver(page):
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
-    # fixed detection automation headless by cloudflare
-    options.add_argument('--headless')
     options.add_argument('--disable-extensions')
     options.add_argument("--disable-notifications")
     options.add_argument('--proxy-server='+PROXY)
@@ -40,14 +37,12 @@ def getPage(driver,page):
         driver.get(url)
     except:
         return []
-    time.sleep(30)
-    driver.save_screenshot(f'./src/batdongsan.com.vn.png')
+    time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     # lấy tất cả link trong trang
     links = soup.find_all('a', class_='js__product-link-for-product-id')
     links = ['https://batdongsan.com.vn'+link['href'] for link in links]
-    print(links)
     return links
 
 
@@ -79,7 +74,7 @@ def crawl_one_thread(page):
         
 def process():
       threads = []
-      for i in range(1, 2):
+      for i in range(1, 10):
          threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
       for thread in threads:
          thread.start()

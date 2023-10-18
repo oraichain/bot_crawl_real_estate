@@ -1,0 +1,11 @@
+pymongo
+requests
+python-dotenv
+fake-useragent
+redis
+webdriver_manager
+unidecode
+undetected_chromedriver
+beautifulsoup4
+flask
+matplotlib

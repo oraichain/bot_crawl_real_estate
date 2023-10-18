@@ -2,16 +2,14 @@ import multiprocessing
 import subprocess
 import os
 
-def run_batdongsan():
-    while True:
-        try:
-            subprocess.run(['python3', 'src/batdongsan.py'], timeout=600)
-        except:
-            os.system('killall chrome')
 
 def run_other_scripts():
     while True:
         try:
+            try:
+                subprocess.run(['python3', 'src/batdongsan.py'], timeout=360)
+            except:
+                os.system('killall chrome')
             subprocess.run(['python3', 'src/nhatot.py'], timeout=300)
             subprocess.run(['python3', 'src/muaban.py'], timeout=300)
             subprocess.run(['python3', 'src/guland.py'], timeout=300)
@@ -25,14 +23,7 @@ def run_other_scripts():
             pass
 
 if __name__ == "__main__":
-    # Tạo hai tiến trình riêng biệt cho hai vòng lặp
-    process1 = multiprocessing.Process(target=run_batdongsan)
-    process2 = multiprocessing.Process(target=run_other_scripts)
 
-    # Bắt đầu hai tiến trình
-    process1.start()
-    process2.start()
-
-    # Chờ cả hai tiến trình hoàn thành
-    process1.join()
-    process2.join()
+    process = multiprocessing.Process(target=run_other_scripts)
+    process.start()
+    
