@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import hashlib
 import threading
 import mongodb
-from noti_logging import logging
+from utils import logging
 import redisdb
 import requests
 from webdriver_manager.chrome import ChromeDriverManager
