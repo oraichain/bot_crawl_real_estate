@@ -47,6 +47,10 @@ def get_proxy(time_live_proxy):
    TIME_LIVE_PROXY = 20*60
    with open('./src/proxy','r') as f:
       info_proxy = f.read().split('|')
+      if info_proxy[0] == '':
+         create_proxy()
+         time.sleep(5)
+         return get_proxy(time_live_proxy)
       if time.time() - float(info_proxy[1]) > TIME_LIVE_PROXY:
          create_proxy()
          time.sleep(5)
