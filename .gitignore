@@ -1,7 +1,6 @@
 .env
 __pycache__/
 logs/
-proxy.txt
 batdongsan.png
 raw/
 script/
