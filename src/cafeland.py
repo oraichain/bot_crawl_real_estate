@@ -45,7 +45,6 @@ def getPage(page):
 
 def getHTML(url):
 
-
    payload={}
    headers = {
    'authority': 'nhadat.cafeland.vn',
