@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
 import redisdb
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+
 
 def getPage(page):
    url = f'https://guland.vn/mua-ban-bat-dong-san?page={page}'
@@ -21,8 +22,8 @@ def getPage(page):
    links = [link.a["href"] for link in links]
    return links
    
-def getHTML(url):
    
+def getHTML(url):
    payload={}
    headers = {
    'authority': 'mogi.vn',
