@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import mongodb
-from noti_logging import logging
+from utils import logging, get_proxy
 import hashlib
 import redisdb
 
