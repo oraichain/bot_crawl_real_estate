@@ -6,18 +6,17 @@ import hashlib
 import redisdb
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+   
+PROXY = get_proxy(5*60)
+print(PROXY)
 
-with open('proxy.txt', 'r') as f:
-   proxy = f.read()
-   
-   
 def getPage(offset):
    if offset == 0 or offset ==1:
       url = 'https://alonhadat.com.vn/nha-dat/can-ban.html'
    else:
       url = f'https://alonhadat.com.vn/nha-dat/can-ban/trang--{offset}.html'
       
-   response = requests.get(url, proxies={'https': proxy})
+   response = requests.get(url, proxies={'https': PROXY})
    soup = BeautifulSoup(response.text, 'html.parser')
    links = soup.find_all('div', class_='ct_title')
    links = [link.find('a')['href'] for link in links]
@@ -26,7 +25,7 @@ def getPage(offset):
    return links
    
 def getHTML(url):
-   response = requests.get(url, proxies={'https': proxy})
+   response = requests.get(url, proxies={'https': PROXY})
    return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'alonhadat.com.vn', 'data': response.text}
 
 def run(offset):
