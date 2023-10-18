@@ -1,11 +1,11 @@
 import requests
 import mongodb
-from noti_logging import logging
+from utils import logging
 import hashlib
-import time
 import redisdb
 
 mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+
 
 def getJSON(id):
    categorys = [1010,1020,1040,1030] # thêm 1050 nếu là cả thuê trọ
@@ -46,6 +46,7 @@ def run():
          if data:
             mongodb.insert(data)
             logging(f'Crawled website: nhatot.com, Id: {data["id_crawl"]}')
-   mongodb.close() 
+   mongodb.close()
+   
 run()
    
