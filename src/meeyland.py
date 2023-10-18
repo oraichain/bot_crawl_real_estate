@@ -1,11 +1,10 @@
 import requests
-import mongodb
 import requests
 from bs4 import BeautifulSoup
-from utils import logging, check_id_crawl
+from utils import logging, check_id_crawl, MongoDB
 import hashlib
 
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 
 with open('./src/public_key_meeyland', 'r') as f:

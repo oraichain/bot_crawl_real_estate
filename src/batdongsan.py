@@ -3,12 +3,13 @@ import time
 from bs4 import BeautifulSoup
 import hashlib
 import threading
-import mongodb
-from utils import logging, get_proxy, check_id_crawl, delete_id_crawl
+from utils import logging, get_proxy, check_id_crawl, delete_id_crawl, MongoDB
 from dotenv import load_dotenv
 load_dotenv()
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+
+mongodb = MongoDB('tindangbatdongsan', 'raw')
 PROXY = get_proxy(15*60)
+
 
 def create_driver(page):         
     options = uc.ChromeOptions()

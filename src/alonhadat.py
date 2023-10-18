@@ -1,11 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import mongodb
-from utils import logging, get_proxy, check_id_crawl
+from utils import logging, get_proxy, check_id_crawl, MongoDB
 import hashlib
 
 
-mongodb = mongodb.MongoDB('tindangbatdongsan', 'raw')
+mongodb = MongoDB('tindangbatdongsan', 'raw')
    
 PROXY = get_proxy(5*60)
 
