@@ -41,4 +41,16 @@ def create_proxy():
     else:
         time.sleep(proxy['next_change']+1)
         return create_proxy()
+     
+
+def get_proxy(time_live_proxy):
+   TIME_LIVE_PROXY = 20*60
+   with open('proxy','r') as f:
+      info_proxy = f.read().split('|')
+      if time.time() - float(info_proxy[1]) > TIME_LIVE_PROXY:
+         create_proxy()
+         time.sleep(5)
+         return get_proxy(time_live_proxy)
+      else:
+         return info_proxy[0]
       
