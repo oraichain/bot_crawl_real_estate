@@ -36,7 +36,7 @@ def create_proxy():
     response = requests.get(url)
     proxy = response.json()
     if proxy['success'] == True:
-        with open('proxy','w') as f:
+        with open('./src/proxy','w') as f:
             f.write(f'proxy["proxy"]|{time.time()}')
     else:
         time.sleep(proxy['next_change']+1)
@@ -45,7 +45,7 @@ def create_proxy():
 
 def get_proxy(time_live_proxy):
    TIME_LIVE_PROXY = 20*60
-   with open('proxy','r') as f:
+   with open('./src/proxy','r') as f:
       info_proxy = f.read().split('|')
       if time.time() - float(info_proxy[1]) > TIME_LIVE_PROXY:
          create_proxy()
