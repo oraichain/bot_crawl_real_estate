@@ -22,8 +22,8 @@ def create_driver(page):
     options.add_argument("--disable-notifications")
     options.add_argument('--proxy-server='+PROXY)
     driver = uc.Chrome(options=options,headless=False,version_main=117)
-    driver.set_window_size(320, 360)
-    driver.set_window_position((page-1)//3*320, (page-1)%3*360)
+    driver.set_window_size(320, 380)
+    driver.set_window_position((page-1)//4*600, (page-1)%4*360)
     return driver
 
 
@@ -74,7 +74,7 @@ def crawl_one_thread(page):
         
 def process():
       threads = []
-      for i in range(1, 10):
+      for i in range(1, 13):
          threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
       for thread in threads:
          thread.start()

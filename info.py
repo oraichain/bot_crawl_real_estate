@@ -1,7 +1,7 @@
 
 from collections import Counter
 
-day = '2023-10-10'
+day = '2023-10-20'
 with open(f'./logs/{day}.log','r') as f:
    data_logs = f.read()
 data_logs = data_logs.split('\n')
