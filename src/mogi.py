@@ -31,9 +31,9 @@ def getHTML(url):
 
 def getPage(page):
    if page == 0 or page == 1:
-      url = 'https://mogi.vn/mua-nha-dat?d=1'
+      url = 'https://mogi.vn/ha-noi/mua-nha-dat?d=1'
    else:
-      url = f"https://mogi.vn/mua-nha-dat?d=1&cp={page}"
+      url = f"https://mogi.vn/ha-noi/mua-nha-dat?d=1&cp={page}"
 
    payload={}
    headers = {

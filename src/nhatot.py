@@ -28,9 +28,9 @@ def create_driver(page):
 
 def getPage(driver,page):
       if page == 1 or page == 0:
-         url = 'https://www.nhatot.com/mua-ban-bat-dong-san'
+         url = 'https://www.nhatot.com/mua-ban-bat-dong-san-ha-noi'
       else:
-         url = f'https://www.nhatot.com/mua-ban-bat-dong-san?page={page}'
+         url = f'https://www.nhatot.com/mua-ban-bat-dong-san-ha-noi?page={page}'
       driver.set_page_load_timeout(10)
       try:
          driver.get(url)

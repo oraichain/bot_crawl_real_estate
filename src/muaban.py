@@ -6,7 +6,7 @@ mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 
 def getId(offset):
-   url = f'https://muaban.net/listing/v1/classifieds/listing?subcategory_id=169&category_id=33&sort=1&limit=20&offset={offset}'
+   url = f'https://muaban.net/listing/v1/classifieds/listing?subcategory_id=169&category_id=33&city_id=24&limit=20&offset={offset}'
    response = requests.get(url)
    if response.status_code == 200:
       list_id = []

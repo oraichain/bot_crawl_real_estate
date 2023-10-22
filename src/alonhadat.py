@@ -10,9 +10,9 @@ PROXY = get_proxy(5*60)
 
 def getPage(offset):
    if offset == 0 or offset ==1:
-      url = 'https://alonhadat.com.vn/nha-dat/can-ban.html'
+      url = 'https://alonhadat.com.vn/nha-dat/can-ban/nha-dat/1/ha-noi.html'
    else:
-      url = f'https://alonhadat.com.vn/nha-dat/can-ban/trang--{offset}.html'
+      url = f'https://alonhadat.com.vn/nha-dat/can-ban/nha-dat/1/ha-noi/trang--{offset}.html'
       
    response = requests.get(url, proxies={'https': PROXY})
    soup = BeautifulSoup(response.text, 'html.parser')

@@ -22,7 +22,7 @@ def get_key():
       
 
 def crawlNewFeed():
-   url = f'https://meeyland.com/_next/data/{PUBLIC_KEY}/mua-ban-nha-dat.json?filter=need%5B%5D%3Dcan_ban&sort=0&category=mua-ban-nha-dat'
+   url = f'https://meeyland.com/_next/data/{PUBLIC_KEY}/mua-ban-nha-dat/ha-noi.json?filter=city%5B%5D%3D5e5501caeb80a7245175dddb%26need%5B%5D%3Dcan_ban&page=2&sort=0&category=mua-ban-nha-dat&slug=ha-noi'
    response = requests.get(url)
    if response.status_code != 200:
       return crawlNewFeed()

@@ -7,7 +7,7 @@ mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 
 def getPage(page):
-   url = f'https://guland.vn/mua-ban-bat-dong-san?page={page}'
+   url = f'https://guland.vn/mua-ban-bat-dong-san-ha-noi?page={page}'
    payload={}
    headers = {
    'authority': 'guland.vn',

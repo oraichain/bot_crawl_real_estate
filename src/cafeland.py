@@ -8,9 +8,9 @@ mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 def getPage(page):
    if page == 1 or page == 0:
-      url = 'https://nhadat.cafeland.vn/nha-dat-ban/'
+      url = 'https://nhadat.cafeland.vn/nha-dat-ban-tai-ha-noi/'
    else:
-      url = f"https://nhadat.cafeland.vn/nha-dat-ban/page-{page}/"
+      url = f"https://nhadat.cafeland.vn/nha-dat-ban-tai-ha-noi/page-{page}/"
    payload={}
    headers = {
    'authority': 'nhadat.cafeland.vn',

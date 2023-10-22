@@ -7,7 +7,7 @@ mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 
 def getNewFeed():
-   url = 'https://sosanhnha.com/nh%C3%A0-%C4%91%E1%BA%A5t-b%C3%A1n'
+   url = 'https://sosanhnha.com/search?iCat=0&iCitId=9278&iDisId=&iPrice=0'
    response = requests.get(url)
    soup = BeautifulSoup(response.text, 'html.parser')
    

@@ -9,7 +9,7 @@ mongodb = MongoDB('tindangbatdongsan', 'raw')
 
 
 def getPage(page):
-  url = f"https://homedy.com/ban-nha-dat/p{page}?sort=new"
+  url = f"https://homedy.com/ban-nha-dat-ha-noi/p{page}?sort=new"
   payload={}
   headers = {
     'authority': 'mogi.vn',
