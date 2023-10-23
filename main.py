@@ -4,7 +4,7 @@ import os
 
 
 def run_other_scripts():
-    while True:
+    while range(1):
         try:
             try:
                 subprocess.run(['python3', 'src/batdongsan.py'], timeout=360)
@@ -23,7 +23,7 @@ def run_other_scripts():
             pass
 
 if __name__ == "__main__":
-
+  
     process = multiprocessing.Process(target=run_other_scripts)
     process.start()
-    
+    process.join()
