@@ -1,9 +1,8 @@
 import requests
-from utils import logging, check_id_crawl, MongoDB
+from utils import logging, check_id_crawl, Duckdb
 import hashlib
 
-mongodb = MongoDB('tindangbatdongsan', 'raw')
-
+duckdb = Duckdb()
 
 def getId(offset):
    url = f'https://muaban.net/listing/v1/classifieds/listing?subcategory_id=169&category_id=33&city_id=24&limit=20&offset={offset}'
@@ -21,8 +20,8 @@ def getJSON(id):
    url = f'https://muaban.net/listing/v1/classifieds/{id}/detail'
    response = requests.get(url)
    website = url.split("/")[2]  
-   return {'id_crawl': hashlib.md5(str(id).encode()).hexdigest(), 'website': website, 'data': response.text}
-         
+   #return f"('{hashlib.md5(str(id).encode()).hexdigest()}', '{website}', '{response.text}')"
+   return [hashlib.md5(str(id).encode()).hexdigest(), website, response.text]     
 
 def run(offset):
    for i in range(0,offset,20):
@@ -31,11 +30,10 @@ def run(offset):
             for id in list_ids:
                if check_id_crawl(hashlib.md5(str(id).encode()).hexdigest(),'raw') == True:
                   data = getJSON(id)
-                  mongodb.insert(data)
-                  logging(f"Crawled website: muaban.net, Id: {data['id_crawl']}")
-   mongodb.close()  
-   
-     
-run(40)
+                  duckdb.insert_raw('raw',data)
+                  logging(f"Crawled website: muaban.net, Id: {hashlib.md5(str(id).encode()).hexdigest()}")
+   duckdb.close()
+
+run(100)
                
                

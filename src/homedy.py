@@ -1,12 +1,10 @@
 
 import requests
 from bs4 import BeautifulSoup
-from utils import logging, check_id_crawl, MongoDB
+from utils import logging, check_id_crawl, Duckdb
 import hashlib
 
-
-mongodb = MongoDB('tindangbatdongsan', 'raw')
-
+duckdb = Duckdb()
 
 def getPage(page):
   url = f"https://homedy.com/ban-nha-dat-ha-noi/p{page}?sort=new"
@@ -54,7 +52,7 @@ def getHTML(url):
   }
   response = requests.request("GET", url, headers=headers, data=payload)
   website = url.split("/")[2]
-  return {'id_crawl': hashlib.sha256(url.encode()).hexdigest(),'website': website, 'data': response.text}
+  return [hashlib.sha256(url.encode()).hexdigest(), website, response.text]
 
 
 def run(offset):
@@ -63,8 +61,8 @@ def run(offset):
     for link in links:
         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
           data = getHTML(link)
-          mongodb.insert(data)
-          logging(f'Crawled website: homedy.com, Id: {data["id_crawl"]}, Link: {link}')  
-  mongodb.close()
+          duckdb.insert_raw('raw',data)
+          logging(f'Crawled website: homedy.com, Id: {hashlib.md5(link.encode()).hexdigest()}')  
+  duckdb.close()
   
 run(2)

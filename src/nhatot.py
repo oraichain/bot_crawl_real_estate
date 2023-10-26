@@ -1,12 +1,13 @@
 import requests
-from utils import logging, check_id_crawl, MongoDB, get_proxy
+from utils import logging, check_id_crawl, Duckdb, get_proxy
 import hashlib
 import undetected_chromedriver as uc
 import time
 from bs4 import BeautifulSoup
 import threading
 
-mongodb = MongoDB('tindangbatdongsan', 'raw')
+duckdb = Duckdb()
+
 PROXY = get_proxy(2*60)
 
 def create_driver(page):         
@@ -54,7 +55,7 @@ def getJSON(id):
    if response.status_code == 200:
       try:
          if response.json()['ad']['category'] in categorys:
-            return {'id_crawl': hashlib.md5(id.encode()).hexdigest(), 'website': 'nhatot.com', 'data': response.json()}
+            return [hashlib.md5(id.encode()).hexdigest(), 'nhatot.com', response.json()]
          else:
             return None
       except:
@@ -70,8 +71,8 @@ def crawl_one_thread(page):
       if check_id_crawl(hashlib.md5(str(id).encode()).hexdigest(),'raw') == True:
          data = getJSON(id)
          if data:
-            mongodb.insert(data)
-            logging(f'Crawled website: nhatot.com, Id: {data["id_crawl"]}')
+            duckdb.insert_raw('raw',data)
+            logging(f'Crawled website: nhatot.com, Id: {hashlib.md5(str(id).encode()).hexdigest()}')
 
 
 def process():
@@ -83,7 +84,7 @@ def process():
       time.sleep(5)
    for thread in threads:
       thread.join()
-   mongodb.close()
+   duckdb.close()
 
 
 if __name__ == '__main__':

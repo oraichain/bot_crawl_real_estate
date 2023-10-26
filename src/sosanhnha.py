@@ -1,17 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-from utils import logging, check_id_crawl, MongoDB
+from utils import logging, check_id_crawl, Duckdb
 import hashlib
 
-mongodb = MongoDB('tindangbatdongsan', 'raw')
+duckdb = Duckdb()
 
 
-def getNewFeed():
-   url = 'https://sosanhnha.com/search?iCat=0&iCitId=9278&iDisId=&iPrice=0'
+def getPage(page):
+   url = 'https://sosanhnha.com/search?iCat=0&iCitId=9278&iDisId=0&iWardId=0&iPrice=0&keyword=&page={page}'
    response = requests.get(url)
    soup = BeautifulSoup(response.text, 'html.parser')
-   
-   links = soup.find_all('a', class_='img_r')
+   links = soup.find_all('a', class_='name')
    links = [link['href'] for link in links]
    link = list(set(links))
    link = ['https://sosanhnha.com'+link for link in link]
@@ -20,16 +19,17 @@ def getNewFeed():
    
 def getHTML(url):
    response = requests.get(url)
-   return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'sosanhnha.com', 'data': response.text}
+   return [hashlib.md5(url.encode()).hexdigest(), 'sosanhnha.com', response.text]
 
 
-def run():
-   links = getNewFeed()
-   for link in links:
-      if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
-         data = getHTML(link)
-         mongodb.insert(data)
-         logging(f'Crawled website: sosanhnha.com, Id: {data["id_crawl"]}, Link: {link}')
-   mongodb.close()
+def run(page):
+   for number_page in range(1, page):
+      links = getPage(number_page)
+      for link in links:
+         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
+            data = getHTML(link)
+            duckdb.insert_raw('raw',data)
+            logging(f'Crawled website: sosanhnha.com, Id: {hashlib.md5(link.encode()).hexdigest()}')
+      duckdb.close()
    
-run()
+run(5)

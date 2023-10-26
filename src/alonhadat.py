@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from utils import logging, get_proxy, check_id_crawl, MongoDB
+from utils import logging, get_proxy, check_id_crawl, Duckdb
 import hashlib
 
 
-mongodb = MongoDB('tindangbatdongsan', 'raw')
+duckdb = Duckdb()
    
 PROXY = get_proxy(5*60)
 
@@ -24,7 +24,7 @@ def getPage(offset):
    
 def getHTML(url):
    response = requests.get(url, proxies={'https': PROXY})
-   return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'alonhadat.com.vn', 'data': response.text}
+   return [hashlib.md5(url.encode()).hexdigest(),'alonhadat.com.vn',response.text]
 
 def run(offset):
    for i in range(1, offset):
@@ -32,8 +32,8 @@ def run(offset):
       for link in links:
          if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
             data = getHTML(link)
-            mongodb.insert(data)
-            logging(f'Crawled website: alonhadat.com.vn, Id: {data["id_crawl"]}, Link: {link}')
-   mongodb.close()
-   
-run(5)
+            duckdb.insert_raw('raw',data)
+            logging(f'Crawled website: alonhadat.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
+   duckdb.close()
+
+run(50)

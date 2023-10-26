@@ -5,7 +5,7 @@ import requests
 import time
 from dotenv import load_dotenv
 import redis
-import pymongo
+import duckdb
 load_dotenv()
 
 
@@ -93,44 +93,35 @@ def check_id_crawl_exist(id_crawl,set_name):
       return True
    else:
       return False
-      
-
-
-class MongoDB:
-   def __init__(self,db_name, collection_name):
-      self.client = pymongo.MongoClient(os.getenv('URL_MONGODB'))
-      self.db = self.client[db_name]
-      self.collection = self.db[collection_name]
-
-   def insert(self, data):
-      self.collection.insert_one(data)
-
-   def find(self, query):
-      return self.collection.find(query)
-
-   def find_one(self, query):
-      return self.collection.find_one(query)
-
-   def update(self, query, data):
-      self.collection.update_one(query, data, upsert=True)
    
-   def update_many(self, query, data):
-      self.collection.update_many(query, data, upsert=True)
-
-   def delete(self, query):
-      self.collection.delete_one(query)
-
-   def delete_many(self, query):
-      self.collection.delete_many(query)
-
-   def upsert(self, query, data):
-      self.collection.update_one(query, data, upsert=True)
+   
+class Duckdb:
+   def __init__(self):
+      self.conn = duckdb.connect('./duckdb/realestate.db')
+      self.c = self.conn.cursor()
       
-   def upsert_many(self, query, data):
-      self.collection.update_many(query, data, upsert=True)
+   def insert_raw(self,tabel_name,data):
+      query = f"""INSERT INTO {tabel_name} VALUES (?, ?, ?)"""
+      self.c.execute(query, data)
+      self.conn.commit()
+   def insert_post_neststock(self,tabel_name,data):
+      query = f"""INSERT INTO {tabel_name} VALUES (?, ?)"""
+      self.c.execute(query, data)
+      self.conn.commit()
+   def create_table(self,table_name,columns):
+      self.c.execute(f"""CREATE TABLE {table_name} {columns}""")
+      self.conn.commit()
+   def delete_table(self,table_name):
+      self.c.execute(f"DROP TABLE {table_name}")
+      self.conn.commit()
+   def select(self,table_name,id_crawl):
+      self.c.execute(f"SELECT * FROM {table_name} WHERE id_crawl = '{id_crawl}'")
+      return self.c.fetchall()
+   def select_many(self,table_name,id_crawls):
+      self.c.execute(f"""SELECT * FROM {table_name} WHERE id_crawl IN ({id_crawls})""")
+      return self.c.fetchall()
       
-   def drop(self):
-      self.collection.drop()
-
    def close(self):
-      self.client.close()
+      self.conn.close()
+      
+

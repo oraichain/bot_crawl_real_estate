@@ -3,11 +3,11 @@ import time
 from bs4 import BeautifulSoup
 import hashlib
 import threading
-from utils import logging, get_proxy, check_id_crawl, delete_id_crawl, MongoDB
+from utils import logging, get_proxy, check_id_crawl, delete_id_crawl, Duckdb
 from dotenv import load_dotenv
 load_dotenv()
 
-mongodb = MongoDB('tindangbatdongsan', 'raw')
+duckdb = Duckdb()
 PROXY = get_proxy(2*60)
 
 def create_driver(page):         
@@ -56,7 +56,7 @@ def getHTML(driver,url):
             return None
         time.sleep(1)
         html = driver.page_source
-        return {'id_crawl': hashlib.md5(url.encode()).hexdigest(), 'website': 'batdongsan.com.vn', 'data': html}
+        return [hashlib.md5(url.encode()).hexdigest(),'batdongsan.com.vn',html]
     else:
         return None
 
@@ -67,8 +67,8 @@ def crawl_one_thread(page):
     for link in links:
         data = getHTML(driver,link)
         if data != None:
-            mongodb.insert(data)
-            logging(f'Crawled website: batdongsan.com.vn, Id: {data["id_crawl"]}, Link: {link}')
+            duckdb.insert_raw('raw',data)
+            logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()})')
     driver.quit()
         
         
@@ -81,7 +81,7 @@ def process():
          time.sleep(5)
       for thread in threads:
           thread.join()
-      mongodb.close()
+      duckdb.close()
           
           
 if __name__ == '__main__':          
