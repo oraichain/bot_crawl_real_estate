@@ -53,6 +53,13 @@ def run(offset):
             duckdb.insert_raw('raw',data)
             logging(f'Crawled website: guland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
    duckdb.close()
-run(2)
+
+
+lists_page = [i for i in range(1, 1000)]
+from multiprocessing import Pool
+map = Pool(20).map
+map(run,lists_page)
+map.close()
+map.join()
          
        

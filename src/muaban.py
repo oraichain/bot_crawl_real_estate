@@ -34,6 +34,12 @@ def run(offset):
                   logging(f"Crawled website: muaban.net, Id: {hashlib.md5(str(id).encode()).hexdigest()}")
    duckdb.close()
 
-run(100)
+
+lists_offset = [i for i in range(19000,20000,20)]
+from multiprocessing import Pool
+map = Pool(20).map
+map(run,lists_offset)
+map.close()
+map.join()
                
                
