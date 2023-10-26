@@ -8,7 +8,6 @@ import batdongsan
 import guland
 import cafeland
 import meeyland
-from s3 import upload_image_to_s3
 
 sys.path.append('src')
 from utils import logging, Duckdb

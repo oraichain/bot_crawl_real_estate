@@ -55,7 +55,8 @@ def propertyGeneralImage(a):
                     "comment": [],
                     "status": "UNSELECTED",
                     "fileUrl": image,
-                    "fileMimeType": "image/png"
+                    "fileMimeType": "image/png",
+                    "isThumbnail": False
                 })
    if len(data) > 0:
       data[0]['isThumbnail'] = True
