@@ -84,7 +84,7 @@ while True:
     datas = duckdb.select_many('raw',list_id_crawl)
     datas = [{'id_crawl':data[0],'website':data[1],'data':data[2]} for data in datas]
    
-    map = Pool(10)
+    map = Pool(1)
     map.map(etl_thread,datas)
     map.close()
     map.join()
