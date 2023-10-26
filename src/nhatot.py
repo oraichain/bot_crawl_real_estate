@@ -55,7 +55,7 @@ def getJSON(id):
    if response.status_code == 200:
       try:
          if response.json()['ad']['category'] in categorys:
-            return [hashlib.md5(id.encode()).hexdigest(), 'nhatot.com', response.json()]
+            return [hashlib.md5(id.encode()).hexdigest(), 'nhatot.com', response.text]
          else:
             return None
       except:

@@ -210,10 +210,7 @@ def amenities(a):
    
 
 def transferNhatot(a):
-   # convert data to json
-   with open('./error/nhatot.json', 'w') as f:
-      f.write(json.dumps(a))
-      
+   a = json.loads(a)
    images_ = propertyGeneralImage(a)
    if images_ == None:
       logging('nhatot.com: Không có ảnh')
