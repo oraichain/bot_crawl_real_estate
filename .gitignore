@@ -1,5 +1,4 @@
 .env
 __pycache__/
 logs/
-duckdb/
-realestate.db
+data/

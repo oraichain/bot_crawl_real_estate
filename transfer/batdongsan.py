@@ -10,10 +10,75 @@ import s3
 with open('./transfer/streets.json', 'r') as f:
    streets = json.load(f)
 def search_street(location):
+   find_address = []
+   location = unidecode(location)
    for street in streets:
-      if street['STREET'].lower() in location and street['DISTRICT'].lower() in location:
-         if street['WARD'].lower() in location:
-            return street
+      if unidecode(street['STREET']).lower() in location.lower():
+         if unidecode(street['WARD']).lower() in location.lower():
+            if unidecode(street['DISTRICT']).lower() in location.lower():
+               if unidecode(street['CITY']).lower() in location.lower():
+                  find_address.append(street)
+                  
+   
+   if len(find_address) == 0:
+      return None
+                  
+   if len(find_address) == 1:
+      return find_address[0]
+   
+   if len(find_address) > 1:
+      for address_item in find_address:
+         # kiem tra ten street, ward, district, city co cap nao trung ten nhau khong
+         if address_item['STREET'] == address_item['WARD']:
+            dulicate = address_item['STREET']
+            address_dulicate = address_item
+         if address_item['STREET'] == address_item['DISTRICT']:
+            dulicate = address_item['STREET']
+            address_dulicate = address_item
+         if address_item['STREET'] == address_item['CITY']:
+            dulicate = address_item['STREET']
+            address_dulicate = address_item
+         if address_item['WARD'] == address_item['DISTRICT']:
+            dulicate = address_item['WARD']
+            address_dulicate = address_item
+         if address_item['WARD'] == address_item['CITY']:
+            dulicate = address_item['WARD']
+            address_dulicate = address_item
+         if address_item['DISTRICT'] == address_item['CITY']:
+            dulicate = address_item['DISTRICT']
+            address_dulicate = address_item
+         
+      
+      try:
+         # dem so lan xuat hien cua dulicate trong chuoi location
+         count = location.lower().count(unidecode(dulicate).lower())
+         if count == 2:
+            return address_dulicate
+         if count == 1:
+            if len(find_address) == 2:
+               index_duplicate = find_address.index(address_dulicate)
+               if index_duplicate == 0:
+                  return find_address[1]
+               else:
+                  return find_address[0]
+            else:
+               # khi find_address > 2 logic chua xu ly
+               return None
+      except:
+         return None
+
+         
+      
+   
+         
+         
+         
+         
+   
+      
+      
+
+
   
    return None
 with open('./transfer/projects.json', 'r') as f:

@@ -57,10 +57,9 @@ def run(offset):
 
 import threading
 threads = []
-for i in range(2000, 5000,50):
+for i in range(1, 1000,20):
    t = threading.Thread(target=run, args=(i,))
    threads.append(t)
-   
 for thread in threads:
    thread.start()
 for thread in threads:

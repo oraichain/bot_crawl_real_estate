@@ -1,10 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-from utils import logging, check_id_crawl, Duckdb
+from utils import logging, check_id_crawl
 import hashlib
 
-duckdb = Duckdb()
-
+def save(id_crawl,data):
+    with open(f'data/raw/cafeland.vn/{id_crawl}','w') as f:
+      f.write(data)
+        
+        
 def getPage(page):
    if page == 1 or page == 0:
       url = 'https://nhadat.cafeland.vn/nha-dat-ban-tai-ha-noi/'
@@ -61,17 +64,17 @@ def getHTML(url):
    }
    
    response = requests.request("GET", url, headers=headers, data=payload)
-   website = 'cafeland.vn'
-   return [hashlib.md5(url.encode()).hexdigest(), website, response.text]
+
+   return [hashlib.md5(url.encode()).hexdigest(), response.text]
       
       
 def run(offset):
    for page in range(offset, offset + 10):
       links = getPage(offset)
       for link in links:
-         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
+         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw_s6') == True:
             data = getHTML(link)
-            duckdb.insert_raw('raw',data)
+            save(data[0],data[1])
             logging(f'Crawled website: cafeland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
       
 
