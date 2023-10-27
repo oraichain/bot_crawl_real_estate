@@ -66,18 +66,19 @@ def getHTML(url):
       
       
 def run(offset):
-   links = getPage(offset)
-   for link in links:
-      if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
-         data = getHTML(link)
-         duckdb.insert_raw('raw',data)
-         logging(f'Crawled website: cafeland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
-   
+   for page in range(offset, offset + 10):
+      links = getPage(offset)
+      for link in links:
+         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
+            data = getHTML(link)
+            duckdb.insert_raw('raw',data)
+            logging(f'Crawled website: cafeland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
+      
 
 
 import threading
 threads = []
-for i in range(1, 1000,20):
+for i in range(0, 340,10):
    t = threading.Thread(target=run, args=(i,))
    threads.append(t)
 for thread in threads:

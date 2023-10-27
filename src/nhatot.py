@@ -77,7 +77,7 @@ def crawl_one_thread(page):
 
 def process():
    threads = []
-   for i in range(1, 13):
+   for i in range(800, 900):
       threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
    for thread in threads:
       thread.start()

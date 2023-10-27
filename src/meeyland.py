@@ -31,18 +31,22 @@ def getPage(page):
    return data[list(data.keys())[0]]['data']
 
 
-def run(page):
-   list_ids = getPage(page)
-   print(f'Get page: {page}')
-   for item in list_ids:
-      if check_id_crawl(hashlib.md5(item['_id'].encode()).hexdigest(),'raw') == True:
-         data = [hashlib.md5(item['_id'].encode()).hexdigest(), 'meeyland.com', item]
-         duckdb.insert_raw('raw',data)
-         logging(f"Crawled website: meeyland.com, Id: {hashlib.md5(item['_id'].encode()).hexdigest()}")
+def run(offset):
+   for page in range(offset, offset + 20):
+      list_ids = getPage(page)
+      for item in list_ids:
+         if check_id_crawl(hashlib.md5(item['_id'].encode()).hexdigest(),'raw') == True:
+            data = [hashlib.md5(item['_id'].encode()).hexdigest(), 'meeyland.com', item]
+            duckdb.insert_raw('raw',data)
+            logging(f"Crawled website: meeyland.com, Id: {hashlib.md5(item['_id'].encode()).hexdigest()}")
    
    
 import threading
 threads = []
-for i in range(435, 1000,1):
-   run(i)
+for i in range(1, 1000,20):
+   threads.append(threading.Thread(target=run, args=(i,)))
+for thread in threads:
+   thread.start()
+for thread in threads:
+   thread.join()
 duckdb.close()

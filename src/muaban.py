@@ -24,7 +24,7 @@ def getJSON(id):
    return [hashlib.md5(str(id).encode()).hexdigest(), website, response.text]     
 
 def run(offset):
-   for i in range(0,offset,20):
+   for i in range(offset,offset + 200,20):
          list_ids = getId(i)
          if list_ids != None:
             for id in list_ids:
@@ -32,14 +32,15 @@ def run(offset):
                   data = getJSON(id)
                   duckdb.insert_raw('raw',data)
                   logging(f"Crawled website: muaban.net, Id: {hashlib.md5(str(id).encode()).hexdigest()}")
-   duckdb.close()
+   
 
 
-lists_offset = [i for i in range(19000,20000,20)]
-from multiprocessing import Pool
-map = Pool(20).map
-map(run,lists_offset)
-map.close()
-map.join()
-               
-               
+import threading
+threads = []
+for i in range(30000, 60000,200):
+   threads.append(threading.Thread(target=run, args=(i,)))
+for thread in threads:
+   thread.start()
+for thread in threads:
+   thread.join()
+duckdb.close()

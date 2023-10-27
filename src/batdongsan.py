@@ -74,16 +74,21 @@ def crawl_one_thread(page):
         
 def process():
       threads = []
-      for i in range(1, 50):
+      for i in range(1, 10):
          threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
       for thread in threads:
          thread.start()
          time.sleep(5)
       for thread in threads:
           thread.join()
-      duckdb.close()
           
           
 if __name__ == '__main__':          
-    process()
+    # viet ham chay process neu qua 5 phut thi kill process()
+    t1 = threading.Thread(target=process)
+    t1.start()
+    time.sleep(600)
+    t1.kill()
+    duckdb.close()
+    
 

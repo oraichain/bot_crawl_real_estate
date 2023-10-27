@@ -1,3 +1,11 @@
+thefuzz
+transformers
+pandas
+natsort
+gdown
+visen
+underthesea
+py_vncorenlp
 pymongo
 requests
 python-dotenv
