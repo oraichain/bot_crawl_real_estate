@@ -75,7 +75,7 @@ def crawl_one_thread(page):
         
 def run(i):
     threads = []
-    for j in range(i,i+25):
+    for j in range(i,i+30):
         t = threading.Thread(target=crawl_one_thread, args=(i+j,))
         threads.append(t)
     for thread in threads:
@@ -84,7 +84,7 @@ def run(i):
     for thread in threads:
         thread.join()
 
-for i in range(1,2500,50):
+for i in range(1,2500,30):
     # chay ham run , set neu qua 5 phut ma khong chay xong thi dung
     @timeout(5*60)
     def run_timeout(i):
