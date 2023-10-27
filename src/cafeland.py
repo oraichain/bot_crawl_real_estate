@@ -66,19 +66,22 @@ def getHTML(url):
       
       
 def run(offset):
-   for i in range(1, offset):
-      links = getPage(i)
-      for link in links:
-         if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
-            data = getHTML(link)
-            duckdb.insert_raw('raw',data)
-            logging(f'Crawled website: cafeland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
-   duckdb.close()
+   links = getPage(offset)
+   for link in links:
+      if check_id_crawl(hashlib.md5(link.encode()).hexdigest(),'raw') == True:
+         data = getHTML(link)
+         duckdb.insert_raw('raw',data)
+         logging(f'Crawled website: cafeland.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
+   
 
 
-lists_page = [i for i in range(1, 1000)]
-from multiprocessing import Pool
-map = Pool(20).map
-map(run,lists_page)
-map.close()
-map.join()
+import threading
+threads = []
+for i in range(1, 1000,20):
+   t = threading.Thread(target=run, args=(i,))
+   threads.append(t)
+for thread in threads:
+   thread.start()
+for thread in threads:
+   thread.join()
+duckdb.close()
