@@ -104,10 +104,13 @@ class Duckdb:
       query = f"""INSERT INTO {tabel_name} VALUES (?, ?, ?)"""
       self.c.execute(query, data)
       self.conn.commit()
+      
    def insert_post_neststock(self,tabel_name,data):
       query = f"""INSERT INTO {tabel_name} VALUES (?, ?)"""
       self.c.execute(query, data)
       self.conn.commit()
+      
+      
    def create_table(self,table_name,columns):
       self.c.execute(f"""CREATE TABLE {table_name} {columns}""")
       self.conn.commit()
@@ -120,7 +123,24 @@ class Duckdb:
    def select_many(self,table_name,id_crawls):
       self.c.execute(f"""SELECT * FROM {table_name} WHERE id_crawl IN ({id_crawls})""")
       return self.c.fetchall()
-      
+   
+   
+   def info_table(self,table_name):
+      self.c.execute(f"SELECT * FROM {table_name}")
+      return len(self.c.fetchall())
+   
+   def info_database(self):
+      self.c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+      # return tung table trong database, moi table bao nhieu row
+      info = {}
+      for table in self.c.fetchall():
+         self.c.execute(f"SELECT * FROM {table[0]}")
+         info[table[0]] = len(self.c.fetchall())
+      return info
+   
+   def delete_all(self,table_name):
+      self.c.execute(f"DELETE FROM {table_name}")
+      self.conn.commit()
    def close(self):
       self.conn.close()
       

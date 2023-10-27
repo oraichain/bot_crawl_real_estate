@@ -10,7 +10,9 @@ with open('./transfer/streets.json', 'r') as f:
 def search_street(location):
    for street in streets:
       if street['STREET'].lower() in location and street['DISTRICT'].lower() in location:
-         return street
+         if street['WARD'].lower() in location:
+            return street
+   
    return None
 with open('./transfer/projects.json', 'r') as f:
    projects = json.load(f)

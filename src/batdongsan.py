@@ -6,9 +6,11 @@ import threading
 from utils import logging, get_proxy, check_id_crawl, delete_id_crawl, Duckdb
 from dotenv import load_dotenv
 load_dotenv()
+from timeout_decorator import timeout
+import os
 
 duckdb = Duckdb()
-PROXY = get_proxy(2*60)
+#PROXY = get_proxy(2*60)
 
 def create_driver(page):         
     options = uc.ChromeOptions()
@@ -20,7 +22,7 @@ def create_driver(page):
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-extensions')
     options.add_argument("--disable-notifications")
-    options.add_argument('--proxy-server='+PROXY)
+    #options.add_argument('--proxy-server='+PROXY)
     driver = uc.Chrome(options=options,headless=False,version_main=117)
     driver.set_window_size(320, 380)
     driver.set_window_position((page-1)//4*600, (page-1)%4*360)
@@ -71,24 +73,31 @@ def crawl_one_thread(page):
             logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()})')
     driver.quit()
         
-        
-def process():
-      threads = []
-      for i in range(1, 10):
-         threads.append(threading.Thread(target=crawl_one_thread, args=(i,)))
-      for thread in threads:
-         thread.start()
-         time.sleep(5)
-      for thread in threads:
-          thread.join()
-          
-          
-if __name__ == '__main__':          
-    # viet ham chay process neu qua 5 phut thi kill process()
-    t1 = threading.Thread(target=process)
-    t1.start()
-    time.sleep(600)
-    t1.kill()
-    duckdb.close()
+def run(i):
+    threads = []
+    for j in range(i,i+25):
+        t = threading.Thread(target=crawl_one_thread, args=(i+j,))
+        threads.append(t)
+    for thread in threads:
+        thread.start()
+        time.sleep(3)
+    for thread in threads:
+        thread.join()
+
+for i in range(1,2500,50):
+    # chay ham run , set neu qua 5 phut ma khong chay xong thi dung
+    @timeout(5*60)
+    def run_timeout(i):
+        run(i)
+    try:
+        run_timeout(i)
+    except Exception as e:
+        print(e)
+        os.system('killall chrome')
+        os.system('killall chromedriver')
+        continue
+    
+
+    
     
 
