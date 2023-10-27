@@ -95,33 +95,18 @@ def check_id_crawl_exist(id_crawl,set_name):
       return False
    
    
-class Duckdb:
+class db:
    def __init__(self):
-      self.conn = duckdb.connect('./duckdb/realestate.db')
-      self.c = self.conn.cursor()
+      self.XPATH = 'data'
       
-   def insert_raw(self,tabel_name,data):
-      query = f"""INSERT INTO {tabel_name} VALUES (?, ?, ?)"""
-      self.c.execute(query, data)
-      self.conn.commit()
-   def insert_post_neststock(self,tabel_name,data):
-      query = f"""INSERT INTO {tabel_name} VALUES (?, ?)"""
-      self.c.execute(query, data)
-      self.conn.commit()
-   def create_table(self,table_name,columns):
-      self.c.execute(f"""CREATE TABLE {table_name} {columns}""")
-      self.conn.commit()
-   def delete_table(self,table_name):
-      self.c.execute(f"DROP TABLE {table_name}")
-      self.conn.commit()
-   def select(self,table_name,id_crawl):
-      self.c.execute(f"SELECT * FROM {table_name} WHERE id_crawl = '{id_crawl}'")
-      return self.c.fetchall()
-   def select_many(self,table_name,id_crawls):
-      self.c.execute(f"""SELECT * FROM {table_name} WHERE id_crawl IN ({id_crawls})""")
-      return self.c.fetchall()
+   def save(self,id_crawl,website,data):
+      with open(f'{self.XPATH}/{website}/{id_crawl}','w') as f:
+         f.write(data)
+   
+   def get(self,id_crawl,website):
+      with open(f'{self.XPATH}/{website}/{id_crawl}','r') as f:
+         return f.read()
       
-   def close(self):
-      self.conn.close()
+   
       
 
