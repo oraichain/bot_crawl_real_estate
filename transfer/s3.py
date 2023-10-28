@@ -27,4 +27,4 @@ def upload_image_to_s3(image_url):
       return f'https://{S3_COMMON_BUCKET}.s3.{S3_REGION}.amazonaws.com/{object_name}'
    else:
       print("Failed to download the image.")
-      return image_url
+      return upload_image_to_s3(image_url)

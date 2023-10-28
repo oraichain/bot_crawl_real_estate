@@ -44,8 +44,13 @@ data_s1 = list(set(data_s1).difference(set(data_s1_reject)))
 logging(f'Number of data: {len(data_s1)}')
 
 def etl_s1(id):
-    with open('data/raw/batdongsan.com.vn/'+id,'r') as f:
-        data = f.read()
+    try:
+        with open('data/raw/batdongsan.com.vn/'+id,'r') as f:
+            data = f.read()
+    except:
+        redisdb.srem('raw_s1',id)
+        logging(f'Deleted website: batdongsan.com.vn, Id: {id}')
+        return None
     data_transfer = batdongsan.transferBatdongsan(data)
     if data_transfer != None:
         data_transfer = json.dumps(data_transfer)
@@ -60,13 +65,13 @@ def etl_s1(id):
 def testcase_address(id):
     with open('data/raw/batdongsan.com.vn/'+id,'r') as f:
         data = f.read()
-    address = batdongsan.address(data)
-    if address == None:
-        logging(f'Address is None, Id: {id}')
-        
+    address = batdongsan.transferBatdongsan(data)
+    
+    with open('testcase.txt','a') as f:
+        f.write(f'{address}\n----------------------------------\n')
 
     
-map = Pool(200)
+map = Pool(10)
 map.map(etl_s1,data_s1)
 map.close()
 map.join()

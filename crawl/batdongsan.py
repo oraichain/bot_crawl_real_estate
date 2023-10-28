@@ -6,7 +6,6 @@ import threading
 from utils import logging, get_proxy, check_id_crawl, delete_id_crawl
 from dotenv import load_dotenv
 load_dotenv()
-from timeout_decorator import timeout
 import os
 
 
@@ -71,19 +70,20 @@ def getHTML(driver,url):
 
 
 def crawl_one_thread(page):
+    print(f'Page: {page}')
     driver = create_driver(page)
     links = getPage(driver,page)
     for link in links:
         data = getHTML(driver,link)
         if data != None:
             save(data[0],data[1])
-            logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()})')
+            logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
     driver.quit()
         
         
 def run(i):
     threads = []
-    for j in range(i,i+5):
+    for j in range(i,i+10,1):
         t = threading.Thread(target=crawl_one_thread, args=(j,))
         threads.append(t)
     for thread in threads:
@@ -91,19 +91,9 @@ def run(i):
         time.sleep(1.5)
     for thread in threads:
         thread.join()
-
-for i in range(0,21,5):
-    # chay ham run , set neu qua 5 phut ma khong chay xong thi dung
-    @timeout(3*60)
-    def run_timeout(i):
-        run(i)
-    try:
-        run_timeout(i)
-    except Exception as e:
-        print(e)
-        os.system('killall chrome')
-        os.system('killall chromedriver')
-        continue
+        
+for h in range(1,300,10):
+    run(h)
     
 
     

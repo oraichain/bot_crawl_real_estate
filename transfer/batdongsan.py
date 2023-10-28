@@ -66,28 +66,14 @@ def search_street(location):
                return None
       except:
          return None
-
-         
-      
-   
-         
-         
-         
-         
-   
-      
-      
-
-
-  
    return None
-with open('./transfer/projects.json', 'r') as f:
+""" with open('./transfer/projects.json', 'r') as f:
    projects = json.load(f)
 def search_project(location):
    for project in projects:
       if project['PROJECT'].lower() in location and project['DISTRICT'].lower() in location:
          return project
-   return None
+   return None """
 
 
 
@@ -106,17 +92,28 @@ def details_batdongsan(a):
    return json_
 
 def propertyGeneralImage(a):
+
    data = []
    soup = BeautifulSoup(a, 'html.parser')
    link_image_ = soup.find_all('img', title=True, src=True)
    link_image_ = [item['src'] for item in link_image_]
    link_image_ = [item for item in link_image_ if 'https://file4.batdongsan.com.vn' in item]
-   link_image_ = [s3.upload_image_to_s3(item) for item in link_image_]
    if len(link_image_) == 0:
-      return None
+      return {
+                    "comment": [],
+                    "status": "UNSELECTED",
+                    "fileUrl": 'https://neststock-common-file.s3.ap-southeast-1.amazonaws.com/RealEstatePost/DCwZCY76UE7Z-batdongsan-default.jpeg',
+                    "fileMimeType": "image/png",
+                    "isThumbnail": True
+                }
    # từ link_image_ lấy ra link ảnh và xoá đi tham số từ resize đến hết / thứ 2
    for i in range(len(link_image_)):
       link_image_[i] = re.sub(r'resize/.*?/', '', link_image_[i])
+      
+
+   link_image_ = [s3.upload_image_to_s3(item) for item in link_image_]
+   
+   
    for image in link_image_:
       data.append({
                     "comment": [],
@@ -125,6 +122,7 @@ def propertyGeneralImage(a):
                     "fileMimeType": "image/png",
                     "isThumbnail": False
                 })
+   
    if len(data) > 0:
       data[0]['isThumbnail'] = True
    # thêm trường isThumbnail = True vào image đầu
@@ -157,18 +155,25 @@ def accessibility(a):
    street_in = details_batdongsan(a)
    if 'duong_vao' in street_in:
       street_meter = float(street_in['duong_vao'].replace('m', '').replace(',', '.'))
-      if street_meter <= 3:
+      if street_meter <= 2.5:
          return 'theBottleNeckPoint'
-      elif street_meter > 3 and street_meter <= 5:
+      elif street_meter > 2.5 and street_meter <= 3:
+         return 'narrorRoad'
+      elif street_meter > 3 and street_meter <= 4:
+         return 'fitOneCarAndOneMotorbike'
+      elif street_meter > 4 and street_meter <= 5:
          return 'parkCar'
       elif street_meter > 5 and street_meter <= 7:
          return 'fitTwoCars'
-      elif street_meter > 7 and street_meter <= 12:
+      elif street_meter > 7:
          return 'fitThreeCars'
-      else:
-         return 'notInTheAlley'
    else:
+      if 'ba gác' in description(a).lower():
+         return 'narrorRoad'
+      
       return 'notInTheAlley'
+      
+
 
 def address(a):
    data = {
@@ -186,22 +191,7 @@ def address(a):
    address_ = address_.text.strip().lower()
    address_search = search_street(address_)
    if address_search == None:
-      address_search = search_project(address_)
-      if address_search == None:
          return None
-      else:
-         data = {
-         'projectName': '',
-         "district": '',
-         "city": '',
-         "country": "Việt Nam"
-         }
-         data['projectName'] = address_search['PROJECT']
-         data['district'] = address_search['DISTRICT']
-         data['city'] = address_search['CITY']
-         lat = address_search['LAT']
-         lng = address_search['LNG']
-         return [data, lat, lng]
    else:
       data['street'] = address_search['STREET']
       data['ward'] = address_search['WARD']
@@ -214,23 +204,27 @@ def address(a):
 
 def description(a):
    soup = BeautifulSoup(a, 'html.parser')
-   bio_ = soup.find('div', class_='re__section-body re__detail-content js__section-body js__pr-description js__tracking').text
-   return bio_
+   bio_ = soup.find('div', class_='re__section-body re__detail-content js__section-body js__pr-description js__tracking')
+   if bio_ == None:
+      return ''
+   # kiem tra co bao nhieu the <br> trong description
+   
+   return bio_.get_text('\n').strip()
 
 def typeOfRealEstate(a):
    soup = BeautifulSoup(a, 'html.parser')
    property_ = soup.find('a', class_='re__link-se')
    property_ = property_['href']
-   if 'ban-dat-nen' in property_:
-      return 'projectLand'
    if 'ban-nha-rieng' in property_:
       return 'privateProperty'
+   if 'ban-can-ho-chung-cu' in property_:
+      return 'condominium'
    if 'ban-dat' in property_:
       return 'privateLand'
    if 'ban-nha-biet-thu-lien-ke' in property_:
-      return 'townhouse'
-   if 'ban-nha-mat-pho' in property_:
       return 'semiDetachedVilla'
+   if 'ban-nha-mat-pho' in property_:
+      return 'townhouse'
    if 'trang-trai' in property_:
       return 'resort'
    if 'ban-shophouse' in property_:
@@ -333,7 +327,19 @@ def price(a):
          price_ = float(price_.replace(' triệu', '').replace(',', '.'))/1000
       return float(price_)
    except:
-      return None  
+      soup = BeautifulSoup(a, 'html.parser')
+      price_ = soup.find('div', class_='re__pr-short-info-item js__pr-short-info-item')
+      price_ = price_.find('span', class_='value').text.strip()
+      if 'thuận' in price_.lower():
+         return 0
+      if '/m²' in price_:
+         price_ = price_.replace('/m²', '')
+         if 'tỷ' in price_:
+            price_ = float(price_.replace(' tỷ', '').replace(',', '.'))*landSize(a)
+         elif 'triệu' in price_:
+            price_ = float(price_.replace(' triệu', '').replace(',', '.'))*landSize(a)/1000
+         return float(price_)
+      return 0
       
 def amenities(a):
    details_ = details_batdongsan(a)
@@ -380,8 +386,7 @@ def transferBatdongsan(a):
    
    price_ = price(a)
    if price_ == None:
-      logging('batdongsan.com.vn: Không có giá')
-      return None
+      price_ = 0
    
    landSize_ = landSize(a)
    if landSize_ == None:
@@ -408,7 +413,7 @@ def transferBatdongsan(a):
                         "longitude": { "comment": [], "status": "UNSELECTED", "value": address_[2] }}},
                   "typeOfRealEstate": { "comment": [], "status": "UNSELECTED", "value": typeOfRealEstate(a) },
                   "frontWidth": { "comment": [], "status": "UNSELECTED", "value": frontWidth(a) },
-                  "endWidth": { "comment": [], "status": "UNSELECTED", "value": frontWidth(a) },
+                  "endWidth": { "comment": [], "status": "UNSELECTED", "value": None },
                   "facade": { "comment": [], "status": "UNSELECTED", "value": facade(a) },
                   "houseDirection": { "comment": [], "status": "UNSELECTED", "value": houseDirection_ },
                   "landSize": { "comment": [], "status": "UNSELECTED", "value": landSize_ },
