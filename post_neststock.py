@@ -25,7 +25,7 @@ def compare_set(set_name1,set_name2):
 def postNeststock(data):
    data = json.loads(data)
    data['propertyBasicInfo']['contact']['phoneNumber']['value'] = ' '
-   url = "https://test.backend.neststock.orai.us/properties/ai-crawl"
+   url = "https://backend.neststock.orai.us/properties/ai-crawl"
    payload = json.dumps(data)
    headers = {
    'x-crawler-key': API_KEY_NESTSTOCK_POST,
@@ -47,14 +47,17 @@ def run(id):
       status = postNeststock(data)
       if status == True:
             redisdb.sadd('neststock_s1_done',id)
-            print(f'Posted website: batdongsan.com.vn, Id: {id}')
+            logging(f'Posted website: batdongsan.com.vn, Id: {id}')
       else:
             redisdb.sadd('neststock_s1_reject',id)
-            print(f'Failed to post website: batdongsan.com.vn, Id: {id}')
+            logging(f'Failed to post website: batdongsan.com.vn, Id: {id}')
             
 list_id = compare_set('neststock_s1','neststock_s1_done')
+list_id_reject = compare_set('neststock_s1_reject','none')
 list_id = list(list_id)
-print(len(list_id))
+list_id_reject = list(list_id_reject)
+list_id = list(set(list_id).difference(set(list_id_reject)))
+
 
 #list_id = list_id[0:5000]
 import threading

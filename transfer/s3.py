@@ -25,6 +25,8 @@ def upload_image_to_s3(image_url):
                         aws_secret_access_key=S3_ACCESS_SECRET_KEY)
       s3.upload_fileobj(image_data,S3_COMMON_BUCKET, object_name, ExtraArgs={'ContentType': 'image/jpeg'})
       return f'https://{S3_COMMON_BUCKET}.s3.{S3_REGION}.amazonaws.com/{object_name}'
+   if response.status_code == 404:
+      return None
    else:
-      print("Failed to download the image.")
+      print("Failed to download the image. ",image_url,"Stauts", response.text)
       return upload_image_to_s3(image_url)

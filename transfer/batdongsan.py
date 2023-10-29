@@ -211,6 +211,12 @@ def description(a):
    
    return bio_.get_text('\n').strip()
 
+def title(a):
+   soup = BeautifulSoup(a, 'html.parser')
+   # get title web
+   title_ = soup.title.string
+   return title_
+
 def typeOfRealEstate(a):
    soup = BeautifulSoup(a, 'html.parser')
    property_ = soup.find('a', class_='re__link-se')
@@ -408,12 +414,13 @@ def transferBatdongsan(a):
                   "frontRoadWidth": { "comment": [], "status": "UNSELECTED", "value": 0 },
                   "address": { "comment": [], "status": "UNSELECTED", "value": address_[0] },
                   "description": { "comment": [], "status": "UNSELECTED", "value": description(a) },
+                  "title": { "comment": [], "status": "UNSELECTED", "value": title(a) },
                   "geolocation": { "comment": [], "status": "UNSELECTED", "value":{
                         "latitude": { "comment": [], "status": "UNSELECTED", "value": address_[1] },
                         "longitude": { "comment": [], "status": "UNSELECTED", "value": address_[2] }}},
                   "typeOfRealEstate": { "comment": [], "status": "UNSELECTED", "value": typeOfRealEstate(a) },
                   "frontWidth": { "comment": [], "status": "UNSELECTED", "value": frontWidth(a) },
-                  "endWidth": { "comment": [], "status": "UNSELECTED", "value": None },
+                  "endWidth": { "comment": [], "status": "UNSELECTED", "value": 0 },
                   "facade": { "comment": [], "status": "UNSELECTED", "value": facade(a) },
                   "houseDirection": { "comment": [], "status": "UNSELECTED", "value": houseDirection_ },
                   "landSize": { "comment": [], "status": "UNSELECTED", "value": landSize_ },

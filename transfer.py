@@ -41,7 +41,7 @@ data_s1 = list(compare_set('raw_s1','neststock_s1'))
 data_s1_reject = list(compare_set('neststock_s1_reject','none'))
 data_s1 = list(set(data_s1).difference(set(data_s1_reject)))
 
-logging(f'Number of data: {len(data_s1)}')
+#print(f'Number of data: {len(data_s1)}')
 
 def etl_s1(id):
     try:
@@ -65,13 +65,12 @@ def etl_s1(id):
 def testcase_address(id):
     with open('data/raw/batdongsan.com.vn/'+id,'r') as f:
         data = f.read()
-    address = batdongsan.transferBatdongsan(data)
-    
+    address = batdongsan.title(data)
     with open('testcase.txt','a') as f:
         f.write(f'{address}\n----------------------------------\n')
 
     
-map = Pool(10)
+map = Pool(20)
 map.map(etl_s1,data_s1)
 map.close()
 map.join()

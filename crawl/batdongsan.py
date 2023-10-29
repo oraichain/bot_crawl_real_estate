@@ -70,7 +70,6 @@ def getHTML(driver,url):
 
 
 def crawl_one_thread(page):
-    print(f'Page: {page}')
     driver = create_driver(page)
     links = getPage(driver,page)
     for link in links:
@@ -81,19 +80,18 @@ def crawl_one_thread(page):
     driver.quit()
         
         
-def run(i):
-    threads = []
-    for j in range(i,i+10,1):
-        t = threading.Thread(target=crawl_one_thread, args=(j,))
-        threads.append(t)
-    for thread in threads:
-        thread.start()
-        time.sleep(1.5)
-    for thread in threads:
-        thread.join()
+
+threads = []
+for j in range(1,6,1):
+    t = threading.Thread(target=crawl_one_thread, args=(j,))
+    threads.append(t)
+for thread in threads:
+    thread.start()
+    time.sleep(2)
+for thread in threads:
+    thread.join()
         
-for h in range(1,300,10):
-    run(h)
+
     
 
     
