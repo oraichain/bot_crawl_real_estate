@@ -55,7 +55,6 @@ def etl_s1(id):
         logging(f'Transfered website: batdongsan.com.vn, Id: {id}')
     else:
         redisdb.sadd('neststock_s1_reject',id)
-        logging(f'Rejected website: batdongsan.com.vn, Id: {id}',level='ERROR')
 
 
 def testcase_address(id):
