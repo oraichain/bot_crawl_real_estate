@@ -12,6 +12,8 @@ import os
 #PROXY = get_proxy(2*60)
 
 def save(id_crawl,data):
+    if not os.path.exists('data/raw/batdongsan.com.vn'):
+        os.makedirs('data/raw/batdongsan.com.vn')
     with open(f'data/raw/batdongsan.com.vn/{id_crawl}','w') as f:
         f.write(data)
         
@@ -82,7 +84,7 @@ def crawl_one_thread(page):
         
 
 threads = []
-for j in range(1,6,1):
+for j in range(1,11,1):
     t = threading.Thread(target=crawl_one_thread, args=(j,))
     threads.append(t)
 for thread in threads:

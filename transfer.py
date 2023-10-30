@@ -65,7 +65,7 @@ def etl_s1(id):
 def testcase_address(id):
     with open('data/raw/batdongsan.com.vn/'+id,'r') as f:
         data = f.read()
-    address = batdongsan.title(data)
+    address = batdongsan.link(data)
     with open('testcase.txt','a') as f:
         f.write(f'{address}\n----------------------------------\n')
 

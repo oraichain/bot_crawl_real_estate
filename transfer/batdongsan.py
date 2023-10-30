@@ -216,6 +216,12 @@ def title(a):
    # get title web
    title_ = soup.title.string
    return title_
+def link(a):
+   soup = BeautifulSoup(a, 'html.parser')
+   link_ = soup.find('meta', property="og:url")
+   if link_ == None:
+      return ''
+   return link_['content']
 
 def typeOfRealEstate(a):
    soup = BeautifulSoup(a, 'html.parser')
@@ -448,7 +454,7 @@ def transferBatdongsan(a):
                      "monthlyCashFlow": {"comment": [],"status": "UNSELECTED", "value": 0 },
                      "financialLeverage": {"comment": [],"status": "UNSELECTED","value": 0 },
                      "liquidity": { "comment": [],"status": "UNSELECTED","value": "high" }}},
-               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a)}}
+               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a)},'link': link(a)}
       
    
    return data_merge
