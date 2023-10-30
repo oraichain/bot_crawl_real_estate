@@ -18,7 +18,7 @@ def save(id_crawl,data):
         f.write(data)
         
 def create_driver(page):
-    try:       
+    try:
         options = uc.ChromeOptions()
         # tắt load ảnh
         prefs = {"profile.managed_default_content_settings.images": 2}
@@ -30,8 +30,8 @@ def create_driver(page):
         options.add_argument("--disable-notifications")
         #options.add_argument('--proxy-server='+PROXY)
         driver = uc.Chrome(options=options,headless=False,version_main=117)
-        driver.set_window_size(320, 380)
-        driver.set_window_position((page-1)//4*600, (page-1)%4*360)
+        #driver.set_window_size(320, 380)
+        #driver.set_window_position((page-1)//4*600, (page-1)%4*360)
         return driver
     except:
         return create_driver(page)
@@ -47,7 +47,7 @@ def getPage(driver,page):
         driver.get(url)
     except:
         return []
-    time.sleep(3)
+    time.sleep(1)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     # lấy tất cả link trong trang
@@ -57,17 +57,24 @@ def getPage(driver,page):
 
 
 def getHTML(driver,url):
-    if check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw_s1') == True:
+    hash_url = hashlib.md5(url.encode()).hexdigest()
+    if check_id_crawl(hash_url,'raw_s1') == True:
         try:
             driver.get(url)
         except:
-            delete_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw_s1')
+            delete_id_crawl(hash_url,'raw_s1')
             return None
         time.sleep(1)
+        from selenium.webdriver.common.by import By
+        try:
+            driver.find_element(By.CLASS_NAME, 're__icon-phone-call').click()
+            time.sleep(1)
+        except:
+            print('Không có nút xem thêm')
         html = driver.page_source
-        return [hashlib.md5(url.encode()).hexdigest(),html]
+        return [hash_url,html]
     else:
-        check_id_crawl(hashlib.md5(url.encode()).hexdigest(),'raw_s1')
+        check_id_crawl(hash_url,'raw_s1')
         return None
 
 
@@ -78,7 +85,7 @@ def crawl_one_thread(page):
         data = getHTML(driver,link)
         if data != None:
             save(data[0],data[1])
-            logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()}')
+            logging(f'Crawled website: batdongsan.com.vn, Id: {hashlib.md5(link.encode()).hexdigest()}, Url: {link}')
     driver.quit()
         
         

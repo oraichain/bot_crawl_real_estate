@@ -6,6 +6,7 @@ from unidecode import unidecode
 import re
 import time
 import s3
+import hashlib
 
 with open('./transfer/streets.json', 'r') as f:
    streets = json.load(f)
@@ -312,13 +313,17 @@ def name(a):
       
 def numberPhone(a):
    soup = BeautifulSoup(a, 'html.parser')
-   phone = soup.find('div', class_='re__btn re__btn-cyan-solid--md phone js__phone phoneEvent js__phone-event')
+   phone = soup.find('div', class_='re__btn re__btn-cyan-solid--md phone js__phone phoneEvent js__phone-event showHotline tooltip')
    if phone == None:
-      return None
-   phone = phone.text.strip()
-   phone = phone.replace(' ', '')
-   phone = phone.replace('·Hiệnsố', '')
-   return phone 
+      phone = soup.find('div', class_='re__btn re__btn-cyan-solid--md phone js__phone phoneEvent js__phone-event')
+      if phone == None:
+         return None
+      phone = phone.text.strip()
+      phone = phone.replace(' ', '')
+      phone = phone.replace('·Hiệnsố', '')
+      return phone 
+   else:
+      return phone['mobile'].strip()
       
 def avatarUrl(a):
    soup = BeautifulSoup(a, 'html.parser')
@@ -380,16 +385,12 @@ def time(a):
 
    
    
-def transferBatdongsan(a):
+def transferBatdongsan(a,hash_url):
    images_ = propertyGeneralImage(a)
-   if images_ == None:
-      logging('batdongsan.com.vn: Không có ảnh')
-      return None
-   
    
    address_ = address(a)
    if address_ == None:
-      logging('batdongsan.com.vn: Không có địa chỉ')
+      logging(f'Rejected website: batdongsan.com.vn, Id: {hash_url}, Type: Location',level='ERROR')
       return None
    
    
@@ -402,7 +403,7 @@ def transferBatdongsan(a):
    
    landSize_ = landSize(a)
    if landSize_ == None:
-      logging('batdongsan.com.vn: Không có diện tích')
+      logging(f'Rejected website: batdongsan.com.vn, Id: {hash_url}, Type: Landsize',level='ERROR')
       return None
    
    
@@ -454,7 +455,7 @@ def transferBatdongsan(a):
                      "monthlyCashFlow": {"comment": [],"status": "UNSELECTED", "value": 0 },
                      "financialLeverage": {"comment": [],"status": "UNSELECTED","value": 0 },
                      "liquidity": { "comment": [],"status": "UNSELECTED","value": "high" }}},
-               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a)},'link': link(a)}
+               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a)},'sourceUrl': link(a)}
       
    
    return data_merge

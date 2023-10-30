@@ -2,12 +2,8 @@ import redis
 import sys
 from multiprocessing import Pool
 sys.path.append('transfer')
-import nhatot
-import muaban
 import batdongsan
-import guland
-import cafeland
-import meeyland
+
 
 sys.path.append('crawl')
 from utils import logging
@@ -49,9 +45,9 @@ def etl_s1(id):
             data = f.read()
     except:
         redisdb.srem('raw_s1',id)
-        logging(f'Deleted website: batdongsan.com.vn, Id: {id}')
+        logging(f'Deleted website: batdongsan.com.vn, Id: {id}',level='ERROR')
         return None
-    data_transfer = batdongsan.transferBatdongsan(data)
+    data_transfer = batdongsan.transferBatdongsan(data,id)
     if data_transfer != None:
         data_transfer = json.dumps(data_transfer)
         redisdb.sadd('neststock_s1',id)
@@ -59,7 +55,7 @@ def etl_s1(id):
         logging(f'Transfered website: batdongsan.com.vn, Id: {id}')
     else:
         redisdb.sadd('neststock_s1_reject',id)
-        logging(f'Rejected website: batdongsan.com.vn, Id: {id}')
+        logging(f'Rejected website: batdongsan.com.vn, Id: {id}',level='ERROR')
 
 
 def testcase_address(id):
