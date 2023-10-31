@@ -24,7 +24,7 @@ def compare_set(set_name1,set_name2):
    
 def postNeststock(data):
    data = json.loads(data)
-   data['propertyBasicInfo']['contact']['phoneNumber']['value'] = ' '
+   #data['propertyBasicInfo']['contact']['phoneNumber']['value'] = ' '
    url = "https://backend.neststock.orai.us/properties/ai-crawl"
    payload = json.dumps(data)
    headers = {

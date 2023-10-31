@@ -323,7 +323,7 @@ def numberPhone(a):
       phone = phone.replace('·Hiệnsố', '')
       return phone 
    else:
-      return phone['mobile'].strip()
+      return phone['mobile'].replace(' ', '')
       
 def avatarUrl(a):
    soup = BeautifulSoup(a, 'html.parser')
@@ -455,7 +455,7 @@ def transferBatdongsan(a,hash_url):
                      "monthlyCashFlow": {"comment": [],"status": "UNSELECTED", "value": 0 },
                      "financialLeverage": {"comment": [],"status": "UNSELECTED","value": 0 },
                      "liquidity": { "comment": [],"status": "UNSELECTED","value": "high" }}},
-               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a)},'sourceUrl': link(a)}
+               "crawlInfo": { "id": id(a), "source" : 's1','time' : time(a),'sourceUrl': link(a)}}
       
    
    return data_merge
